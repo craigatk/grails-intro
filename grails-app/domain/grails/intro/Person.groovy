@@ -8,9 +8,12 @@ class Person {
     String middleName
     String lastName
 
+    Address address
+
     static constraints = {
         firstName(nullable: false, blank: false)
         middleName(nullable: true)
         lastName(nullable: false, blank: false)
+        address(nullable: true)
     }
 }
