@@ -5,6 +5,8 @@ import grails.transaction.Transactional
 @Transactional
 class PersonService {
 
+    def sessionFactory
+
     List<Person> findInCityWithLastNameCriteria(String cityName, String personLastName) {
         Person.withCriteria {
             eq('lastName', personLastName)
@@ -35,5 +37,15 @@ class PersonService {
     List<Person> findInMinneapolisOver35HQL() {
         Person.executeQuery("select person from Person person inner join person.address as address \
                              where person.age > 35 and address.city = 'Minneapolis'")
+    }
+
+    List<String> findLastNamesWithAge(Integer age) {
+        def currentSession = sessionFactory.currentSession
+
+        def sqlQuery = currentSession.createSQLQuery("select p.last_name from person p where p.age = :age")
+
+        sqlQuery.setInteger('age', age)
+
+        return sqlQuery.list()
     }
 }

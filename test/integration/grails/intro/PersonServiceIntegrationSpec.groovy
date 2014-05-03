@@ -73,4 +73,15 @@ class PersonServiceIntegrationSpec extends IntegrationSpec {
         then:
         assert searchResults == [person]
     }
+
+    def 'should find last names of age with SQL query'() {
+        given:
+        Person person = new Person(firstName: 'Jane', lastName: 'Smith', age: 37, address: addressInMinneapolis).save()
+
+        when:
+        List<Person> searchResults = personService.findLastNamesWithAge(37)
+
+        then:
+        assert searchResults == [person.lastName]
+    }
 }
