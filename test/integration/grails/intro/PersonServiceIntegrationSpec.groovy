@@ -9,11 +9,13 @@ class PersonServiceIntegrationSpec extends IntegrationSpec {
     Person notSmithInCity
     Person personNotInCity
 
-    def setup() {
-        Address addressInCity = new Address(street: '123 Main St', city: 'Minneapolis', state: 'MN', postalCode: '55434').save()
-        smithInCity = new Person(firstName: 'Jim', lastName: 'Smith', address: addressInCity).save()
+    Address addressInMinneapolis
 
-        notSmithInCity = new Person(firstName: 'John', lastName: 'Smythe', address: addressInCity).save()
+    def setup() {
+        addressInMinneapolis = new Address(street: '123 Main St', city: 'Minneapolis', state: 'MN', postalCode: '55434').save()
+        smithInCity = new Person(firstName: 'Jim', lastName: 'Smith', address: addressInMinneapolis).save()
+
+        notSmithInCity = new Person(firstName: 'John', lastName: 'Smythe', address: addressInMinneapolis).save()
 
         Address addressNotInCity = new Address(street: '234 Upper St', city: 'St. Paul', state: 'MN', postalCode: '55401').save()
         personNotInCity = new Person(firstName: 'Jane', lastName: 'Smythe', address: addressNotInCity).save()
@@ -37,5 +39,38 @@ class PersonServiceIntegrationSpec extends IntegrationSpec {
         assert peopleInCity?.contains(smithInCity)
         assert !peopleInCity?.contains(notSmithInCity)
         assert !peopleInCity?.contains(personNotInCity)
+    }
+
+    def 'should find person in Minneapolis over 35 using where query'() {
+        given:
+        Person person = new Person(firstName: 'Jane', lastName: 'Smith', age: 36, address: addressInMinneapolis).save()
+
+        when:
+        List<Person> searchResults = personService.findInMinneapolisOver35Where()
+
+        then:
+        assert searchResults == [person]
+    }
+
+    def 'should find person in Minneapolis over 35 using criteria query'() {
+        given:
+        Person person = new Person(firstName: 'Jane', lastName: 'Smith', age: 36, address: addressInMinneapolis).save()
+
+        when:
+        List<Person> searchResults = personService.findInMinneapolisOver35Criteria()
+
+        then:
+        assert searchResults == [person]
+    }
+
+    def 'should find person in Minneapolis over 35 using HQL query'() {
+        given:
+        Person person = new Person(firstName: 'Jane', lastName: 'Smith', age: 36, address: addressInMinneapolis).save()
+
+        when:
+        List<Person> searchResults = personService.findInMinneapolisOver35HQL()
+
+        then:
+        assert searchResults == [person]
     }
 }

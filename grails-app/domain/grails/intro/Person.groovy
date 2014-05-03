@@ -7,6 +7,7 @@ class Person {
     String firstName
     String middleName
     String lastName
+    Integer age
 
     Address address
 
@@ -14,6 +15,7 @@ class Person {
         firstName(nullable: false, blank: false)
         middleName(nullable: true)
         lastName(nullable: false, blank: false)
+        age(nullable: true)
         address(nullable: true)
     }
 }
